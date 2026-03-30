@@ -1,14 +1,17 @@
 package web.controller;
 
-import ch.qos.logback.core.model.Model;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import web.dto.UserRequestDto;
+import web.dto.UserResponseDto;
 import web.model.AppUser;
+import web.model.Role;
 import web.service.RoleService;
 import web.service.UserService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,55 +21,78 @@ public class AdminRestController {
     private final RoleService roleService;
 
     public AdminRestController(UserService userService, RoleService roleService) {
-
         this.userService = userService;
         this.roleService = roleService;
     }
 
-
     @GetMapping("/users")
+    public List<UserResponseDto> getAllUsers() {
+        return userService.findAll()
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
 
+    private UserResponseDto convertToDto(AppUser user) {
+        return new UserResponseDto(
+                user.getId(),
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getAge(),
+                user.getEmail(),
+                user.getRoles().stream()
+                        .map(role -> role.getName().replace("ROLE_", ""))
+                        .toList()
+        );
+    }
 
-    @PostMapping("/newUser")
-    public ResponseEntity<?> createUser(@Valid @RequestBody AppUser newUser, BindingResult bindingResult, Model model){
-        if (userService.findByUsername(newUser.getUsername())){
+    @GetMapping("/users/{id}")
+    public UserResponseDto getUserById(@PathVariable Long id){
+        AppUser user = userService.findById(id).orElseThrow();
+        return convertToDto(user);
+    }
+
+    @GetMapping("/roles")
+    public List<Role> getAllRoles(){
+        return roleService.findAll();
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult){
+        if (userService.findByUsername(dto.getUsername())){
             return ResponseEntity.badRequest().body(Map.of("username", "Username already exists"));
         }
 
-        if (userService.findByEmail(newUser.getEmail())) {
+        if (userService.findByEmail(dto.getEmail())) {
             return ResponseEntity.badRequest().body(Map.of("email", "Email already exists"));
         }
 
         if (bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body(bindingResult);
         }
-        userService.save(newUser);
-        return ResponseEntity.ok(model);
+        userService.saveFromDto(dto);
+        return ResponseEntity.ok(Map.of("message", "User created successfully"));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestParam("id") Long id){
+    public ResponseEntity<?> deleteUser(@RequestParam("id") Long id){
         userService.delete(id);
-        return ResponseEntity.ok().body("User was deleted");
+        return ResponseEntity.ok(Map.of("message","User was deleted"));
     }
 
-    @PutMapping("/edit")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody AppUser editUser, BindingResult bindingResult, Model model){
-        AppUser existingUser = userService.findById(editUser.getId()).orElseThrow();
-        editUser.setId(existingUser.getId());
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDto dto, BindingResult bindingResult){
+        AppUser existingUser = userService.findById(id).orElseThrow();
 
-        if (editUser.getRoles() == null || editUser.getRoles().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("roles", "User must have at least one role"));
-        }
-
-        if (!existingUser.getUsername().equals(editUser.getUsername())
-                && userService.findByUsername(editUser.getUsername())) {
+        if (!existingUser.getUsername().equals(dto.getUsername())
+                && userService.findByUsername(dto.getUsername())) {
 
             return ResponseEntity.badRequest().body(Map.of("username","Username already exists"));
         }
 
-        if (!existingUser.getEmail().equals(editUser.getEmail())
-                && userService.findByEmail(editUser.getEmail())) {
+        if (!existingUser.getEmail().equals(dto.getEmail())
+                && userService.findByEmail(dto.getEmail())) {
 
             return ResponseEntity.badRequest().body(Map.of("email","Email already exists"));
         }
@@ -75,8 +101,8 @@ public class AdminRestController {
             return ResponseEntity.badRequest().body(bindingResult);
         }
 
-        userService.update(editUser);
-        return ResponseEntity.ok(model);
+        userService.updateFromDto(id, dto);
+        return ResponseEntity.ok(Map.of("message", "User updated successfully"));
 
     }
 }
