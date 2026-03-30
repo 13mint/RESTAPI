@@ -1,5 +1,7 @@
 package web.service;
 
+import org.springframework.security.core.userdetails.User;
+import web.dto.UserRequestDto;
 import web.model.AppUser;
 
 import java.util.List;
@@ -20,4 +22,7 @@ public interface UserService {
     boolean findByUsername(String username);
 
     boolean findByEmail(String email);
+
+    void saveFromDto(UserRequestDto dto);
+    void updateFromDto(Long id, UserRequestDto dto);
 }

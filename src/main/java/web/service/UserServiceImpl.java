@@ -2,12 +2,14 @@ package web.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import web.dto.UserRequestDto;
 import web.model.Role;
 import web.repository.RoleRepository;
 import web.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import web.model.AppUser;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,11 +21,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repo;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    public UserServiceImpl(UserRepository repo, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    private final UserService userService;
+
+    public UserServiceImpl(UserRepository repo, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserService userService) {
 
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -99,6 +104,38 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean findByEmail(String email) {
         return repo.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public void saveFromDto(UserRequestDto dto) {
+        AppUser user = new AppUser();
+        user.setUsername(dto.getUsername());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setAge(dto.getAge());
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRolesIds())));
+
+        userService.save(user);
+    }
+
+    @Override
+    public void updateFromDto(Long id, UserRequestDto dto) {
+        AppUser user = repo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setUsername(dto.getUsername());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setAge(dto.getAge());
+        user.setEmail(dto.getEmail());
+
+        if(dto.getPassword() != null && !dto.getPassword().isBlank()){
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRolesIds())));
+        repo.save(user);
     }
 
 
