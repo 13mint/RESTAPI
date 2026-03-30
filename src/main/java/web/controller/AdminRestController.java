@@ -34,7 +34,7 @@ public class AdminRestController {
         }
 
         if (userService.findByEmail(newUser.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of("email", "Email already exists");
+            return ResponseEntity.badRequest().body(Map.of("email", "Email already exists"));
         }
 
         if (bindingResult.hasErrors()){
@@ -56,7 +56,7 @@ public class AdminRestController {
         editUser.setId(existingUser.getId());
 
         if (editUser.getRoles() == null || editUser.getRoles().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("roles", "User must have at least one role");
+            return ResponseEntity.badRequest().body(Map.of("roles", "User must have at least one role"));
         }
 
         if (!existingUser.getUsername().equals(editUser.getUsername())

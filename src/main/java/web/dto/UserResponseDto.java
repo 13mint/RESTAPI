@@ -21,6 +21,9 @@ public class UserResponseDto {
         this.roles = roles;
     }
 
+    public UserResponseDto(Long id, String username, String firstName, String lastName, int age, String email, List<String> role) {
+    }
+
     public Long getId(){
         return id;
     }
