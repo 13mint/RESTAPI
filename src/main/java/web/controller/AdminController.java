@@ -1,16 +1,11 @@
 package web.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import web.model.AppUser;
-import web.repository.RoleRepository;
 import web.service.RoleService;
 import web.service.UserService;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -24,15 +19,15 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-//    @GetMapping
-//    public String adminPage(Model model) {
-//        model.addAttribute("users", userService.findAll());
-//        model.addAttribute("roles", roleService.findAll());
-//
-//        model.addAttribute("newUser", new AppUser());
-//        model.addAttribute("editUser", new AppUser());
-//        return "admin";
-//    }
+    @GetMapping
+    public String adminPage(Model model) {
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("roles", roleService.findAll());
+
+        model.addAttribute("newUser", new AppUser());
+        model.addAttribute("editUser", new AppUser());
+        return "admin";
+    }
 //
 //    @PostMapping("/newUser")
 //    public String createUser(@Valid @ModelAttribute("newUser") AppUser newUser, BindingResult bindingResult, Model model){
