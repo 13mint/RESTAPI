@@ -21,14 +21,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repo;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserService userService) {
+    public UserServiceImpl(UserRepository repo, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
 
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.userService = userService;
     }
 
     @Override
@@ -114,10 +112,10 @@ public class UserServiceImpl implements UserService {
         user.setLastName(dto.getLastName());
         user.setAge(dto.getAge());
         user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPassword(dto.getPassword());
         user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRolesIds())));
 
-        userService.save(user);
+        save(user);
     }
 
     @Override

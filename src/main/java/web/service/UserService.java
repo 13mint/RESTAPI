@@ -1,6 +1,5 @@
 package web.service;
 
-import org.springframework.security.core.userdetails.User;
 import web.dto.UserRequestDto;
 import web.model.AppUser;
 
