@@ -30,14 +30,17 @@ public class UserRequestDto {
     @NotNull(message = "Age cannot be empty")
     @Min(value = 1, message = "Age must be greater than 0")
     @Max(value = 120, message = "Age must be less than 120")
-    private int age;
+    private Integer age;
 
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Invalid email")
     private String email;
 
+    @NotBlank(message = "Password cannot be empty")
     private String password;
-    private List<Long> roleIds;
+
+    @NotEmpty(message = "Select at least one role")
+    private List<Long> rolesIds;
 
     public UserRequestDto(){
 
@@ -68,10 +71,10 @@ public class UserRequestDto {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
-    public void setAge(int age){
+    public void setAge(Integer age){
         this.age = age;
     }
 
@@ -91,10 +94,10 @@ public class UserRequestDto {
     }
 
     public List<Long> getRolesIds(){
-        return roleIds;
+        return rolesIds;
     }
 
-    public void setRoleIds(List<Long> roleIds) {
-        this.roleIds = roleIds;
+    public void setRolesIds(List<Long> rolesIds) {
+        this.rolesIds = rolesIds;
     }
 }

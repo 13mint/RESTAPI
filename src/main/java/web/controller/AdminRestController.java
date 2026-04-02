@@ -4,10 +4,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import web.dto.RoleDto;
 import web.dto.UserRequestDto;
 import web.dto.UserResponseDto;
 import web.model.AppUser;
-import web.model.Role;
 import web.service.RoleService;
 import web.service.UserService;
 
@@ -54,23 +54,35 @@ public class AdminRestController {
     }
 
     @GetMapping("/roles")
-    public List<Role> getAllRoles(){
-        return roleService.findAll();
+    public List<RoleDto> getAllRoles(){
+        return roleService.findAll()
+                .stream()
+                .map(role -> new RoleDto(role.getId(), role.getName()))
+                .toList();
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult){
-        if (userService.findByUsername(dto.getUsername())){
-            return ResponseEntity.badRequest().body(Map.of("username", "Username already exists"));
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult) {
+        Map<String, String> errors = new java.util.HashMap<>();
+
+        if (userService.findByUsername(dto.getUsername())) {
+            errors.put("username", "Username already exists");
         }
 
         if (userService.findByEmail(dto.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of("email", "Email already exists"));
+            errors.put("email", "Email already exists");
         }
 
-        if (bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(bindingResult);
+        if (bindingResult.hasErrors()) {
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
         }
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         userService.saveFromDto(dto);
         return ResponseEntity.ok(Map.of("message", "User created successfully"));
     }
