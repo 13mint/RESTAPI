@@ -2,7 +2,9 @@ package web.model;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -16,8 +18,9 @@ public class Role implements GrantedAuthority {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
-    private Set<AppUser> users;
+    private Set<AppUser> users = new HashSet<>();
 
     public Role() {}
 
