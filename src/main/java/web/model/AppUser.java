@@ -43,7 +43,7 @@ public class AppUser implements UserDetails {
     @NotNull(message = "Age cannot be empty")
     @Min(value = 1, message = "Age must be greater than 0")
     @Max(value = 120, message = "Age must be less than 120")
-    private int age;
+    private Integer age;
 
     @Column(unique = true, nullable = false)
     @NotBlank
