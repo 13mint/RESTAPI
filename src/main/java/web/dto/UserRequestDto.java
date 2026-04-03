@@ -36,11 +36,10 @@ public class UserRequestDto {
     @Email(message = "Invalid email")
     private String email;
 
-    @NotBlank(message = "Password cannot be empty")
     private String password;
 
     @NotEmpty(message = "Select at least one role")
-    private List<Long> rolesIds;
+    private List<Long> roleIds;
 
     public UserRequestDto(){
 
@@ -49,6 +48,7 @@ public class UserRequestDto {
     public Long getId(){
         return id;
     }
+    public void setId(Long id){this.id = id; }
 
     public String getUsername(){
         return username;
@@ -93,11 +93,11 @@ public class UserRequestDto {
         this.password = password;
     }
 
-    public List<Long> getRolesIds(){
-        return rolesIds;
+    public List<Long> getRoleIds(){
+        return roleIds;
     }
 
-    public void setRolesIds(List<Long> rolesIds) {
-        this.rolesIds = rolesIds;
+    public void setRolesIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 }

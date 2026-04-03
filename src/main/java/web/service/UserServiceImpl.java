@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
         user.setAge(dto.getAge());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-        user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRolesIds())));
+        user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRoleIds())));
 
         save(user);
     }
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRolesIds())));
+        user.setRoles(new HashSet<>(roleRepository.findAllById(dto.getRoleIds())));
         repo.save(user);
     }
 
