@@ -302,6 +302,73 @@
                             </div>
 
                             <form id="deleteUserForm">
+                                <div class="modal-body">
+
+                                    <input type="hidden" name="id" id="deleteId">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}" />
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteIdVisible" class="form-label d-block">ID</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteIdVisible" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteUsername" class="form-label d-block">Username</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteUsername" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteFirstName" class="form-label d-block">First name</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteFirstName" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteLastName" class="form-label d-block">Last name</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteLastName" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteAge" class="form-label d-block">Age</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteAge" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteEmail" class="form-label d-block">Email</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteEmail" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row text-center">
+                                        <label for="deleteRoles" class="form-label d-block">Roles</label>
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-50 mx-auto" id="deleteRoles" disabled>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button class="btn btn-danger" type="submit">
+                                        Delete
+                                    </button>
+                                </div>
                             </form>
 
                         </div>
