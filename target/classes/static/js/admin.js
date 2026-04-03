@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("deleteUserForm").addEventListener("submit", deleteUser);
 });
 
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 async function loadUsers() {
     try {
         const response = await fetch('/api/admin/users');
@@ -155,7 +158,8 @@ async function createUser(event) {
         const response = await fetch("/api/admin/users", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                [csrfHeader]: csrfToken
             },
             body: JSON.stringify(user)
         });
@@ -227,7 +231,8 @@ async function updateUser(event) {
         const response = await fetch(`/api/admin/users/${id}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                [csrfHeader]: csrfToken
             },
             body: JSON.stringify(user)
         });
@@ -265,7 +270,10 @@ async function deleteUser(event) {
     const id = document.getElementById("deleteId").value;
 
     const response = await fetch(`/api/admin/delete?id=${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers:{
+            [csrfHeader]: csrfToken
+        }
     });
 
     if (response.ok) {
