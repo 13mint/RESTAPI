@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         user.setAge(dto.getAge());
         user.setEmail(dto.getEmail());
 
-        if(dto.getPassword() != null && !dto.getPassword().isBlank()){
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
