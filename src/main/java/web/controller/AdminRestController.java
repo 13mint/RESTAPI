@@ -72,6 +72,9 @@ public class AdminRestController {
         if (userService.findByEmail(dto.getEmail())) {
             errors.put("email", "Email already exists");
         }
+        if (dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
+            errors.put("password", "Password cannot be empty");
+        }
 
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(error ->
@@ -113,6 +116,9 @@ public class AdminRestController {
         if(bindingResult.hasErrors()){
             bindingResult.getFieldErrors().forEach(error ->
                     errors.put(error.getField(), error.getDefaultMessage()));
+        }
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
         }
 
         userService.updateFromDto(id, dto);
