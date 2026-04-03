@@ -96,21 +96,23 @@ public class AdminRestController {
     @PutMapping("/users/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDto dto, BindingResult bindingResult){
         AppUser existingUser = userService.findById(id).orElseThrow();
+        Map<String, String> errors = new java.util.HashMap<>();
 
         if (!existingUser.getUsername().equals(dto.getUsername())
                 && userService.findByUsername(dto.getUsername())) {
 
-            return ResponseEntity.badRequest().body(Map.of("username","Username already exists"));
+            errors.put("username", "Username already exists");
         }
 
         if (!existingUser.getEmail().equals(dto.getEmail())
                 && userService.findByEmail(dto.getEmail())) {
 
-            return ResponseEntity.badRequest().body(Map.of("email","Email already exists"));
+            errors.put("email","Email already exists");
         }
 
         if(bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(bindingResult);
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage()));
         }
 
         userService.updateFromDto(id, dto);
